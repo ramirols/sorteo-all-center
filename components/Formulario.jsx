@@ -113,7 +113,7 @@ export default function Formulario() {
                 return true;
               }
             })}
-            placeholder="Ingresa un participante por línea"
+            placeholder="Ingresa un participante por línea (no se permiten líneas vacías entre participantes)"
             disabled={participants.length > 0}
             className="w-full h-40 p-4 rounded-xl bg-white/20 text-black placeholder-black/50 mb-2 cursor-pointer focus:outline-none border border-gray-300"
           />
