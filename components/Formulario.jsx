@@ -156,13 +156,24 @@ export default function Formulario() {
             }}
           />
 
-          <button
-            type="submit"
-            className="w-full transition-all duration-300 bg-primary hover:bg-primary/80 text-white font-bold p-3 rounded-xl shadow-lg border border-gray-300 cursor-pointer"
-          >
-            Sortear
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              className="w-full transition-all duration-300 bg-primary hover:bg-primary/80 text-white font-bold p-3 rounded-xl shadow-lg border border-gray-300 cursor-pointer"
+            >
+              Sortear
+            </button>
 
+            <button
+              type="button"
+              onClick={() => reset()}
+              className="w-full transition-all duration-300 bg-red-500 hover:bg-red-600 text-white font-bold p-3 rounded-xl shadow-lg border border-gray-300 cursor-pointer"
+            >
+              Limpiar
+            </button>
+          </div>
+
+          <h2 className="text-sm text-gray-500 mt-4">¡O puedes cargar un archivo Excel con los participantes!</h2>
           {/* INPUT ARCHIVO EXCEL */}
           <input
             type="file"
