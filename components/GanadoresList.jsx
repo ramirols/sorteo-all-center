@@ -5,9 +5,10 @@ import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 import * as XLSX from "xlsx";
 import { FiDownload } from "react-icons/fi";
+import { HiOutlineTrophy } from "react-icons/hi2";
+import { PiConfettiLight } from "react-icons/pi";
 
 export default function GanadoresList({ lista }) {
-
     // CONFETTI ÉPICO
     useEffect(() => {
         const end = Date.now() + 1500;
@@ -47,9 +48,9 @@ export default function GanadoresList({ lista }) {
                 initial={{ opacity: 0, scale: 0.6, y: -40 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
-                className="text-4xl font-extrabold text-center mb-4 text-primary drop-shadow-xl"
+                className="text-4xl font-extrabold text-center mb-4 text-primary drop-shadow-xl flex items-center gap-2"
             >
-                🎉 ¡Ganadores del Sorteo! 🎉
+                <PiConfettiLight className="text-4xl" /> ¡Ganadores del Sorteo! <PiConfettiLight className="text-4xl" />
             </motion.h2>
 
             {/* BOTÓN DESCARGAR */}
@@ -64,6 +65,20 @@ export default function GanadoresList({ lista }) {
             >
                 <FiDownload className="text-xl" />
                 Descargar Excel
+            </motion.button>
+
+            {/* BOTON DE VOLVER */}
+            <motion.button
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+                onClick={() => window.location.reload()}
+                className="mb-6 flex items-center gap-2 bg-gray-500 hover:bg-gray-600 
+                   text-white font-bold px-5 py-3 rounded-xl shadow-xl 
+                   transition-all cursor-pointer active:scale-95"
+            >
+                <FiDownload className="text-xl" />
+                Volver al formulario
             </motion.button>
 
             {/* LISTA DE GANADORES */}
@@ -82,7 +97,6 @@ export default function GanadoresList({ lista }) {
                                 stiffness: 220,
                             }}
                             className="relative p-5 rounded-2xl bg-white/70 backdrop-blur-xl 
-                         shadow-[0_10px_25px_rgba(0,0,0,0.15)]
                          border border-primary/40 text-center
                          text-lg font-semibold text-black overflow-hidden"
                         >
@@ -90,7 +104,7 @@ export default function GanadoresList({ lista }) {
                             <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-50 blur-xl"></div>
 
                             <div className="relative flex items-center justify-center gap-2 z-10">
-                                <span className="text-2xl">🏆</span>
+                                <span className="text-2xl"><HiOutlineTrophy className="text-primary" /></span>
                                 <span>{item}</span>
                             </div>
 
@@ -106,6 +120,8 @@ export default function GanadoresList({ lista }) {
                     ))}
                 </AnimatePresence>
             </div>
+
+            
         </div>
     );
 }
