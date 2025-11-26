@@ -5,11 +5,12 @@ import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 import * as XLSX from "xlsx";
 import { FiDownload } from "react-icons/fi";
-import { HiOutlineTrophy } from "react-icons/hi2";
+import { HiOutlineTrophy, HiOutlineArrowPath } from "react-icons/hi2";
 import { PiConfettiLight } from "react-icons/pi";
 
-export default function GanadoresList({ lista }) {
-    // CONFETTI ÉPICO
+export default function GanadoresList({ lista, onRepeat }) {
+
+    // CONFETTI ÉPICO PERO SIN SONIDO
     useEffect(() => {
         const end = Date.now() + 1500;
 
@@ -38,7 +39,7 @@ export default function GanadoresList({ lista }) {
     };
 
     return (
-        <div className="relative w-full flex flex-col items-center pb-10">
+        <div className="relative w-full flex flex-col items-center pb-10 p-8">
 
             {/* Glow dinámico */}
             <div className="absolute inset-0 -z-10 bg-gradient-to-b from-primary/10 to-transparent blur-3xl" />
@@ -50,7 +51,9 @@ export default function GanadoresList({ lista }) {
                 transition={{ duration: 0.6, ease: "easeOut" }}
                 className="text-4xl font-extrabold text-center mb-4 text-primary drop-shadow-xl flex items-center gap-2"
             >
-                <PiConfettiLight className="text-4xl" /> ¡Ganadores del Sorteo! <PiConfettiLight className="text-4xl" />
+                <PiConfettiLight className="text-4xl" />
+                ¡Ganadores del Sorteo!
+                <PiConfettiLight className="text-4xl" />
             </motion.h2>
 
             {/* BOTÓN DESCARGAR */}
@@ -59,7 +62,7 @@ export default function GanadoresList({ lista }) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
                 onClick={descargarExcel}
-                className="mb-6 flex items-center gap-2 bg-primary hover:bg-primary/80 
+                className="mb-4 flex items-center gap-2 bg-primary hover:bg-primary/80 
                    text-white font-bold px-5 py-3 rounded-xl shadow-xl 
                    transition-all cursor-pointer active:scale-95"
             >
@@ -67,22 +70,22 @@ export default function GanadoresList({ lista }) {
                 Descargar Excel
             </motion.button>
 
-            {/* BOTON DE VOLVER */}
             <motion.button
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-                onClick={() => window.location.reload()}
-                className="mb-6 flex items-center gap-2 bg-gray-500 hover:bg-gray-600 
+                transition={{ delay: 0.4, duration: 0.5 }}
+                onClick={onRepeat}
+                className="mb-6 flex items-center gap-2 bg-gray-600 hover:bg-gray-700 
                    text-white font-bold px-5 py-3 rounded-xl shadow-xl 
                    transition-all cursor-pointer active:scale-95"
             >
-                <FiDownload className="text-xl" />
-                Volver al formulario
+                <HiOutlineArrowPath className="text-xl" />
+                Volver a sortear
             </motion.button>
 
-            {/* LISTA DE GANADORES */}
-            <div className="grid w-full gap-4 overflow-y-auto max-h-80">
+
+            {/* LISTA DE GANADORES CON SCROLL ELEGANTE */}
+            <div className="grid w-full gap-4 overflow-y-auto max-h-80 pr-2 custom-scroll px-8 overflow-x-hidden py-5">
                 <AnimatePresence>
                     {lista.map((item, index) => (
                         <motion.div
@@ -100,15 +103,15 @@ export default function GanadoresList({ lista }) {
                          border border-primary/40 text-center
                          text-lg font-semibold text-black overflow-hidden"
                         >
-                            {/* Glow suavísimo */}
+                            {/* Glow */}
                             <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-50 blur-xl"></div>
 
                             <div className="relative flex items-center justify-center gap-2 z-10">
-                                <span className="text-2xl"><HiOutlineTrophy className="text-primary" /></span>
+                                <HiOutlineTrophy className="text-primary text-2xl" />
                                 <span>{item}</span>
                             </div>
 
-                            {/* Hover shine */}
+                            {/* Shine hover */}
                             <motion.div
                                 initial={{ translateX: "-120%" }}
                                 whileHover={{ translateX: "120%" }}
@@ -120,8 +123,6 @@ export default function GanadoresList({ lista }) {
                     ))}
                 </AnimatePresence>
             </div>
-
-            
         </div>
     );
 }

@@ -8,6 +8,7 @@ import GanadoresList from "./GanadoresList";
 import { shuffleArray } from "@/lib/shuffle";
 import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
+import Logo from "./Logo";
 
 export default function Formulario() {
   const {
@@ -21,6 +22,7 @@ export default function Formulario() {
   const [finalWinners, setFinalWinners] = useState(null);
   const [showCountdown, setShowCountdown] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [manualParticipants, setManualParticipants] = useState([]);
 
   // -------------------------
   //  HANDLE EXCEL UPLOAD
@@ -52,13 +54,20 @@ export default function Formulario() {
   //  HANDLE SUBMIT
   // -------------------------
   const onSubmit = (data) => {
-    // Usar Excel si existe, sino usar textarea
-    let list = participants.length > 0
-      ? participants
-      : data.participantes
+    let list;
+
+    // ✔ Usar Excel si existe
+    if (participants.length > 0) {
+      list = [...participants];
+    }
+
+    // ✔ Usar textarea solo si NO hay Excel
+    else {
+      list = data.participantes
         .split("\n")
         .map((i) => i.trim())
         .filter(Boolean);
+    }
 
     if (list.length === 0)
       return toast.error("Debes ingresar participantes o cargar un archivo");
@@ -76,22 +85,46 @@ export default function Formulario() {
       const winners = shuffled.slice(0, winnersCount);
 
       setFinalWinners(winners);
-      setParticipants(shuffled.slice(winnersCount));
+
+      // ❗ SOLO se actualiza participants si viene de Excel
+      if (participants.length > 0) {
+        setParticipants(shuffled.slice(winnersCount));
+      }
+
+      // ❗ Si es manual, NO tocar participants (así textarea no se bloquea)
+
       setShowCountdown(false);
       setLoading(false);
-
       toast.success("¡Sorteo completado!");
     }, 3500);
   };
 
+  const repeatSort = () => {
+    setFinalWinners(null);
+    setShowCountdown(false);
+    toast.success("Listo para volver a sortear");
+  };
+
+  const handleClear = () => {
+    reset();                 // limpia inputs del formulario (incluye textarea)
+    setParticipants([]);     // limpia Excel cargado
+    setFinalWinners(null);   // limpia ganadores
+    setShowCountdown(false); // quita countdown
+    setLoading(false);       // quita loading
+    toast.success("Formulario limpiado");
+  };
+
   return (
     <div>
+      <div>
+        <Logo />
+      </div>
       {showCountdown ? (
         <Countdown onFinish={() => { }} />
       ) : finalWinners ? (
-        <GanadoresList lista={finalWinners} />
+        <GanadoresList lista={finalWinners} onRepeat={repeatSort} />
       ) : (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full p-10">
           {/* TEXTAREA SOLO SI NO SE SUBIÓ ARCHIVO */}
           <textarea
             {...register("participantes", {
@@ -100,14 +133,22 @@ export default function Formulario() {
 
                 const lines = value
                   .split("\n")
-                  .map(line => line.trim());
+                  .map(line => line.trim())
+                  .filter(Boolean);
 
+                // ❌ No permitir líneas vacías
                 if (lines.some(line => line === "")) {
-                  return "No se permiten líneas vacías entre participantes";
+                  toast.error("No se permiten líneas vacías entre participantes");
                 }
 
+                // ❌ No permitir números
+                if (lines.some(line => /\d/.test(line))) {
+                  toast.error("Los nombres no pueden contener números");
+                }
+
+                // ❌ Límite de 50 caracteres
                 if (lines.some(line => line.length > 50)) {
-                  return "Máximo 50 caracteres por participante";
+                  toast.error("Máximo 50 caracteres por participante");
                 }
 
                 return true;
@@ -147,7 +188,7 @@ export default function Formulario() {
             errors={errors}
             rules={{
               required: "Este campo es obligatorio",
-              min: { value: 5, message: "El mínimo es 5 ganadores" },
+              min: { value: 1, message: "El mínimo es 1 ganador" },
               max: { value: 100, message: "El máximo permitido es 100 ganadores" },
               pattern: {
                 value: /^[0-9]{1,3}$/,
@@ -166,7 +207,7 @@ export default function Formulario() {
 
             <button
               type="button"
-              onClick={() => reset()}
+              onClick={handleClear}
               className="w-full transition-all duration-300 bg-red-500 hover:bg-red-600 text-white font-bold p-3 rounded-xl shadow-lg border border-gray-300 cursor-pointer"
             >
               Limpiar

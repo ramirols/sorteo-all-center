@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function Countdown({ onFinish }) {
     const [count, setCount] = useState(3);
     const [flash, setFlash] = useState(false);
-    const [boom, setBoom] = useState(false); // explosión final
+    const [boom, setBoom] = useState(false);
 
     useEffect(() => {
         if (count === 0) {
@@ -32,7 +32,7 @@ export default function Countdown({ onFinish }) {
     }, [count]);
 
     return (
-        <div className="flex items-center justify-center h-80 relative overflow-hidden">
+        <div className="flex items-center justify-center h-80 relative overflow-hidden p-10">
 
             {/* Glow suave de fondo */}
             <div className="absolute inset-0 bg-primary/10 blur-3xl animate-pulse" />
